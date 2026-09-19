@@ -7,6 +7,7 @@ import {
   Patch,
   Delete,
   Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 
 import type { Role } from '../types/users.js';
@@ -18,18 +19,14 @@ export class UsersController {
 
   @Get()
   findAll(@Query('role') role?: Role) {
-    const findUserByRole = this.userService.findUsersByRole(role);
+    const findUserByRole = this.userService.findByRole(role);
     return findUserByRole;
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return { id };
-  }
-
-  @Get(':id')
-  findOneByType(@Param('id') id: string) {
-    return { id };
+  findOneById(@Param('id', ParseIntPipe) id: number) {
+    const user = this.userService.findById(id);
+    return user;
   }
 
   @Post()

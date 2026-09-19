@@ -36,12 +36,17 @@ export class UsersService {
     },
   ];
 
-  findUsersByRole(role?: Role) {
+  findByRole(role?: Role) {
     if (role) {
       const filterUsersByRole = this.users.filter((user) => user.role === role);
       return filterUsersByRole;
     }
 
     return this.users;
+  }
+
+  findById(id: number) {
+    const user = this.users.find((user) => user.id === id);
+    return user;
   }
 }
