@@ -9,16 +9,17 @@ import {
   Query,
 } from '@nestjs/common';
 
-enum Role {
-  INTERN = 'INTERN',
-  ENGINEER = 'ENGINEER',
-}
+import type { Role } from '../types/users.js';
+import { UsersService } from './users.service.js';
 
 @Controller('users')
 export class UsersController {
+  constructor(private userService: UsersService) {}
+
   @Get()
   findAll(@Query('role') role?: Role) {
-    return { role };
+    const findUserByRole = this.userService.findUsersByRole(role);
+    return findUserByRole;
   }
 
   @Get(':id')
