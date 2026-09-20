@@ -8,10 +8,12 @@ import {
   Delete,
   Query,
   ParseIntPipe,
+  ValidationPipe,
 } from '@nestjs/common';
 
 import type { Role } from '../types/users.js';
 import { UsersService } from './users.service.js';
+import { CreateUserDto } from './dto/create-user.dto.js';
 
 @Controller('users')
 export class UsersController {
@@ -30,8 +32,8 @@ export class UsersController {
   }
 
   @Post()
-  create(@Body() user: {}) {
-    return user;
+  create(@Body(ValidationPipe) createUserDto: CreateUserDto) {
+    return createUserDto;
   }
 
   @Patch(':id')
