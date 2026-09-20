@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { DatabaseService } from '../database/service.module.js';
+import { DatabaseService } from '../database/database.service.js';
 import type {
   TestCreateInput,
   TestUpdateInput,
@@ -11,26 +11,47 @@ export class EmployeesService {
   constructor(private readonly database: DatabaseService) {}
 
   async create(createEmployeeDto: TestCreateInput) {
-    const allTests = await this.database.prismaClient.$executeRaw`
-    SELECT id, email, name, role, createAt, updatedAt from tests`;
-    return allTests;
+    const test = await this.database.prismaClient.test.create({
+      data: createEmployeeDto,
+    });
+
+    return test;
   }
 
   async findAll() {
-    const allTests = await this.database.prismaClient.$executeRaw`
-    SELECT id, email, name, role, createAt, updatedAt from tests`;
+    const allTests = await this.database.prismaClient.test.findMany();
     return allTests;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} employee`;
+  async findOne(id: string) {
+    const test = await this.database.prismaClient.test.findFirst({
+      where: {
+        id,
+      },
+    });
+
+    if (!test) {
+      throw new NotFoundException('The test is not found');
+    }
+
+    return test;
   }
 
-  update(id: number, updateEmployeeDto: TestUpdateInput) {
-    return `This action updates a #${id} employee`;
+  async update(id: string, updateEmployeeDto: TestUpdateInput) {
+    const updatedTest = await this.database.prismaClient.test.update({
+      data: updateEmployeeDto,
+      where: {
+        id,
+      },
+    });
+    return updatedTest;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} employee`;
+  async remove(id: string) {
+    await this.database.prismaClient.test.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
