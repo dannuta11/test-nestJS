@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import type { Role } from '../types/users.js';
 @Injectable()
@@ -47,6 +47,11 @@ export class UsersService {
 
   findById(id: number) {
     const user = this.users.find((user) => user.id === id);
+
+    if (!user) {
+      throw new NotFoundException('User Not Found!');
+    }
+
     return user;
   }
 }
